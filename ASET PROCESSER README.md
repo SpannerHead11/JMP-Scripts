@@ -1,0 +1,1 @@
+The raw Aset files are configured partially tall and partially wide.  This script revises the layout to fully wide and embeds a script (Thickness Plot) in the data table to plot thickness against SLOT and MEAS SET.
