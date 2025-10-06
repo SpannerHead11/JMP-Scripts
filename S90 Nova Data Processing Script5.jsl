@@ -1,0 +1,247 @@
+﻿Names Default to Here( 1 );
+
+// Get the current data table
+dt = Current Data Table();
+
+//The following "Contains" statement is crucial to have the script run without error.
+Current Data Table() << Select Where( Contains(:c000014, "Die1x") & Is Missing(Lag(:c000014, -1)));
+sel_rows = Current Data Table() << Get Rows where( :c000014 == " Die1x" & Is Missing(Lag(:c000014, -1)));
+
+j=1;
+
+For( i = 1, i <= N Items( sel_rows ), i++,
+block_of_interest = (dt << get selected rows())[j];
+block_of_interest = index(block_of_interest-4,block_of_interest+7);
+dt  << Select Rows( block_of_interest );
+	j=j+12;
+);
+
+
+dt << delete rows;
+
+
+	New Column("Lot", Character, "Nominal", Formula(If(:c000001 != "------------------------------------------------------------------------------------------", If(:c000001 == "Lot ID :", :c000002, Lag(:Lot, 1)))));
+	
+	New Column("Wafer2", Character, "Nominal", Formula(If(:c000001 != "------------------------------------------------------------------------------------------", If(:c000004 == " WaferId", Lag(:c000004, -2), Lag(:Wafer2, 1)))));
+	New Column("Wafer", Character, "Nominal", Formula(If(:c000001 != "------------------------------------------------------------------------------------------", If(Is Missing(:Wafer2), Lag(:Wafer2, -3), :Wafer2))));
+	
+	New Column("Site2", Character, "Nominal", Formula(If(:c000001 != "------------------------------------------------------------------------------------------", If(:c000003 == " Site#", Lag(:c000003, -2), Lag(:Site2, 1)))));
+	New Column("Site", Character, "Nominal", Formula(If(:c000001 != "------------------------------------------------------------------------------------------", If(Is Missing(:Site2), Lag(:Site2, -3), :Site2))));
+	
+	New Column("Recipe", Character, "Nominal", Formula(If(:c000001 != "------------------------------------------------------------------------------------------", If(:c000001 == "Recipe Name:", :c000002, Lag(:Recipe, 1)))));
+
+Wait(1);
+	
+	dt:Lot << Delete Formula;
+	dt:Wafer << Delete Formula;
+	dt:Site << Delete Formula;
+	dt:Recipe << Delete Formula;
+	
+	dt << Delete Columns( :Wafer2 );
+	dt << Delete Columns( :Site2 );
+
+
+dt << Move Selected Columns( {:Lot, :Wafer, Site, Recipe}, after( :c000013 ) );
+
+// Delete columns
+Current Data Table() << Delete Columns(
+	:c000001, :c000002, :c000003, :c000004, :c000005, :c000006, :c000007,
+	:c000008, :c000009, :c000010, :c000011, :c000012, :c000013
+);
+
+// Get all column names as strings
+cnmes = dt << Get Column Names("string");
+
+// Initialize Start and End indices
+Start = .;
+End = .;
+
+// Find the index of the "Device 2" column
+For(i = 1, i <= N Items(cnmes), i++,
+    If(Contains(cnmes[i], "c000014"),
+        Start = i + 1;
+        Break(); // Exit loop once found
+    );
+);
+
+// Find the index of the "Process Script" column
+For(j = 1, j <= N Items(cnmes), j++,
+    If(Contains(cnmes[j], "c000044"),
+        End = j-1;
+        Break(); // Exit loop once found
+    );
+);
+
+datacols = {};
+
+For(k = start, k <= End, k++,
+    Insert into (datacols, cnmes[k]) // Determine Data Columns
+);
+
+cols_to_check = datacols;
+
+m = Matrix(IsMissing(dt[0, cols_to_check]));
+rows_to_delete = Loc(V Sum(m`) == N Items(cols_to_check));
+dt << select rows(rows_to_delete); // for demo purposes
+dt << Delete Rows(rows_to_delete); // use this in real use case
+
+// New column: Split
+Current Data Table() << New Column( "Split",
+	Numeric,
+	"Ordinal",
+	Format( "Best", 12 )
+) << Move Selected Columns( {:Split}, To First );
+
+
+// Fill to end of table
+For Each( {irow}, Index( 1, N Row( Current Data Table() ) ),
+	{values = {1, 1, 2, 2, 1, 1, 2, 2}, dt = Current Data Table()},
+	dt:Split[irow] = values[Modulo( irow - 1, N Items( values ) ) + 1]
+);
+
+// Split data table
+// → Data Table( "Untitled 242" )
+Current Data Table() << Split(
+	Split By( :Split ),
+	Split(
+		:c000014, :c000015, :c000016, :c000017, :c000018, :c000019,
+		:c000020, :c000021, :c000022, :c000023, :c000024, :c000025,
+		:c000026, :c000027, :c000028, :c000029, :c000030, :c000031,
+		:c000032, :c000033, :c000034, :c000035, :c000036, :c000037,
+		:c000038, :c000039, :c000040, :c000041, :c000042, :c000043,
+		:c000044
+	),
+	Output Table( "Mike's Unstacked Data.jmp" ),
+	Sort by Column Property
+);
+
+close(dt);
+
+dt = Current Data Table();
+
+For( c = 5, c < N Col( dt ), c ++,
+	Column( dt, c ) << Set Name( Column( dt, c )[1] );
+);
+
+dt << Select Where(Mod(Row(), 2) == 1);
+dt << Delete Rows;
+
+// Stack data table
+// → Data Table( "Mike's Data" )
+Data Table( "Mike's Unstacked Data" ) << Stack(
+	columns(
+		:" Die1x"n, :"  Die1"n, :"  Die1y"n, :"    GOF1"n, :" Die2x"n, :"  Die2"n,
+		:"  Die2y"n, :"    GOF2"n, :" Die3x"n, :"  Die3"n, :"  Die3y"n, :"    GOF3"n,
+		:" Die4x"n, :"  Die4"n, :"  Die4y"n, :"    GOF4"n, :" Die5x"n, :"  Die5"n,
+		:"  Die5y"n, :"    GOF5"n, :" Die6x"n, :"  Die6"n, :"  Die6y"n, :"    GOF6"n,
+		:" Die7x"n, :"  Die7"n, :"  Die7y"n, :"    GOF7"n, :" Die8x"n, :"  Die8"n,
+		:"  Die8y"n, :"    GOF8"n, :" Die9x"n, :"  Die9"n, :"  Die9y"n, :"    GOF9"n,
+		:" Die10x"n, :"  Die10"n, :"  Die10y"n, :"    GOF10"n, :" Die11x"n,
+		:"  Die11"n, :"  Die11y"n, :"    GOF11"n, :" Die12x"n, :"  Die12"n,
+		:"  Die12y"n, :"    GOF12"n, :" Die13x"n, :"  Die13"n, :"  Die13y"n,
+		:"    GOF13"n, :" Die14x"n, :"  Die14"n, :"  Die14y"n, :"    GOF14"n,
+		:" Die15x"n, :"  Die15"n, :"  Die15y"n, :"    GOF15"n
+	),
+	Source Label Column( "Label" ),
+	Stacked Data Column( "Data" ),
+	Number of Series( 4 ),
+	Output Table( "Mike's Data.jmp" )
+);
+
+// Delete columns
+Data Table( "Mike's Data" ) << Delete Columns( :c000044 1, :c000044 2 );
+
+// Change column name: Data → Diex
+Data Table( "Mike's Data" ):Data << Set Name( "Sitex" );
+
+// Change column name: Data 2 → Thk (Å)
+Data Table( "Mike's Data" ):Data 2 << Set Name( "Thk (Å)" );
+
+// Change column name: Data 3 → Sitey
+Data Table( "Mike's Data" ):Data 3 << Set Name( "Sitey" );
+
+// Change column name: Data 4 → GOF
+Data Table( "Mike's Data" ):Data 4 << Set Name( "GOF" );
+
+// Delete columns
+Data Table( "Mike's Data" ) << Delete Columns(
+	:Label, :Label 2, :Label 3, :Label 4
+);
+
+// Move selected column: Sitey
+Data Table( "Mike's Data" ) << Move Selected Columns( {:Sitey}, after( :Sitex ) );
+
+Close(Data Table( "Mike's Unstacked Data" ));
+
+// Change column info: Site
+Data Table( "Mike's Data" ):Site << Data Type( Numeric ) <<
+Set Modeling Type( "Ordinal" ) << Set Field Width( 12 );
+
+
+// Change column info: Sitex
+Data Table( "Mike's Data" ):Sitex << Data Type( Numeric ) <<
+Set Modeling Type( "Ordinal" ) << Set Field Width( 12 );
+
+
+// Change column info: Sitey
+Data Table( "Mike's Data" ):Sitey << Data Type( Numeric ) <<
+Set Modeling Type( "Ordinal" ) << Set Field Width( 12 );
+
+
+// Change column info: Thk (Å)
+Data Table( "Mike's Data" ):"Thk (Å)"n << Data Type( Numeric ) <<
+Set Modeling Type( "Continuous" ) << Set Field Width( 12 );
+
+
+// Change column info: GOF
+Data Table( "Mike's Data" ):GOF << Data Type( Numeric ) <<
+Set Modeling Type( "Continuous" ) << Set Field Width( 12 );
+
+// New column: Mean
+Data Table( "Mike's Data" ) << New Column( "Mean",
+	Numeric,
+	"Continuous",
+	Format( "Best", 12 )
+);
+
+// Change column formula: Mean
+Data Table( "Mike's Data" ):Mean << Set Formula(
+	Col Mean( :"Thk (Å)"n, :Lot, :Wafer )
+);
+
+// New column: Range
+Data Table( "Mike's Data" ) << New Column( "Range",
+	Numeric,
+	"Continuous",
+	Format( "Best", 12 )
+);
+
+
+// Change column formula: Range
+Data Table( "Mike's Data" ):Range << Set Formula(
+	Col Maximum( :"Thk (Å)"n, :Lot, :Wafer )
+	-Col Minimum( :"Thk (Å)"n, :Lot, :Wafer )
+);
+
+// New column: STD
+Data Table( "Mike's Data" ) << New Column( "STD",
+	Numeric,
+	"Continuous",
+	Format( "Best", 12 )
+);
+
+// Change column formula: STD
+Data Table( "Mike's Data" ):STD << Set Formula(
+	Col Std Dev( :"Thk (Å)"n, :Lot, :Wafer )
+);
+
+summarize(unique_values=by(:LOT));
+
+Lots = Concat Items(unique_values, ", ");
+
+dt = Current Data Table();
+
+if (N Items(unique_values) <= 5, dt << set name( Lots || " Mirra Data" ), "Multiple Lots Mirra Data" );
+
+
+
