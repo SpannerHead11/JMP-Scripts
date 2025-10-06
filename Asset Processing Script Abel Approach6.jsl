@@ -1,0 +1,383 @@
+Clear Symbols();
+
+//Make the initial table be dt, will need to reassign later.
+dt = Current Data Table();
+
+// Delete selected rows
+dt << Clear Select << Select Rows( Index( 1, 9 ) ) << Delete Rows;
+
+//Rename Values for actual metric names, 9 rows earlier.
+For( i = 1, i <= N Cols( dt ), i++,
+
+col = Column(i);
+
+For( j = 1, j <= N Rows( dt ), j++,
+    If( col[j] == "Value",
+        col[j] = col[j-9];
+    )
+);
+
+);
+
+//Transpose the tall part of the table to become wide to match the rest of the table.
+New Column( "Column 8",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 20 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 21 ),
+					Lag( :Column 8, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 9",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 19 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 20 ),
+					Lag( :Column 9, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 10",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 18 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 19 ),
+					Lag( :Column 10, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 11",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 17 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 18 ),
+					Lag( :Column 11, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 12",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 16 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 17 ),
+					Lag( :Column 12, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 13",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 15 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 16 ),
+					Lag( :Column 13, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 14",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 14 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 15 ),
+					Lag( :Column 14, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 15",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 13 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 14 ),
+					Lag( :Column 15, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 16",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 12 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 13 ),
+					Lag( :Column 16, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 17",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 11 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 12 ),
+					Lag( :Column 17, 1 )
+				)
+			)
+		)
+	)
+);
+New Column( "Column 18",
+	Character,
+	"Nominal",
+	Formula(
+		If( !Is Missing( As Column( 1 ) ),
+			If( As Column( 1 ) == "Site #",
+				Lag( As Column( 1 ), 10 ),
+				If( Lag( As Column( 1 ), 1 ) == "Site #",
+					Lag( As Column( 2 ), 11 ),
+					Lag( :Column 18, 1 )
+				)
+			)
+		)
+	)
+);
+
+//Don't let the delete formula happen before the forulas are complete because that can happen.	
+Wait( 1 );
+	
+//Delete column formulas now that the values are moved.
+dt:Column 8 << Delete Formula;
+dt:Column 9 << Delete Formula;
+dt:Column 10 << Delete Formula;
+dt:Column 11 << Delete Formula;
+dt:Column 12 << Delete Formula;
+dt:Column 13 << Delete Formula;
+dt:Column 14 << Delete Formula;
+dt:Column 15 << Delete Formula;
+dt:Column 16 << Delete Formula;
+dt:Column 17 << Delete Formula;
+dt:Column 18 << Delete Formula;
+
+//Get rid of the original tall data
+dt << Select where( As Column(1) == "RESULT TYPE" | As Column(1) == "WAFER ID" | As Column(1) == "LOT ID" | As Column(1) == "Cassette" | As Column(1) == "SLOT" | As Column(1) == "STATUS" | As Column(1) == "DATA TYPE" | As Column(1) == "RECIPE" | As Column(1) == "RCP CNT" | As Column(1) == "MEAS SET" | As Column(1) == "MATERIAL" | As Column(1) == "SITE" | As Column(1) == "MEAN" | As Column(1) == "MIN" | As Column(1) == "MAX" |	As Column(1) == "% STDDEV" | As Column(1) == "STDDEV" | As Column(1) == "3 % STDDEV" | As Column(1) ==	"3 STDDEV" | As Column(1) == "RANGE" | As Column(1) == "COLLECTION DATE/TIME:" | As Column(1) == "PROCESS DATE/TIME:" | As Column(1) == "EQUIPMENT:" | As Column(1) == "OPERATOR:" | As Column(1) == "SHIFT:" | As Column(1) == "MACHINE TYPE:" 
+	
+);
+dt << Delete Rows;
+
+//Need to select MEAS SET values as these have unique table layouts.  Will use these to sunset the table so it can be processed and concatenated back together.
+Summarize( unique = By(:Column 16 ));
+
+delete = {"", "MEAS SET"};
+
+For( i = 1, i <= N Items( delete ), i++,
+	Remove From( unique, As List( Loc( unique, delete[i] ) ) )
+);
+
+//Break the tables up by MEAS SET
+For( i = 1, i <= N Items( unique ), i++,
+
+//Select each MEAS SET group iteratively
+flag=0;
+for each row(
+	If(dt:Column 16 == unique[i], flag=1,
+		dt:Column 16 == "", flag=0
+	);
+	If( flag==1, dt << select rows(Row()-1, Row() ))
+);
+
+flag=0;
+for each row(
+	If(dt:Column 16 == unique[i], flag=1,
+		dt:Column 16 == "", flag=0
+	);
+	If( flag==1, dt << select rows( Row() ))
+);
+
+//Create individual table
+dt2 = dt << Subset( Output Table( "MEAS SET "||unique[i] ), Selected Rows( 1 ), selected columns( 0 ) );
+
+//Appropriately rename column headers from 1st row entries
+For( j = 1, j <= N Col( dt2 ), j++,
+	Column( dt2, j ) << Set Name( Column( dt2, j )[1] );
+);
+
+// Delete selected rows which are now the headers
+dt2 << Select where( :Site # == "Site #" ) << Delete Rows;
+
+//Now text is gone from the columns they can become numeric continuous
+Local( {old dt = Current Data Table()},
+	Current Data Table( dt2 );
+	For Each( {col, index},
+		{Column(2), Column(3), Column(4), Column(5), Column(6),
+		Column(7)},
+		col << Data Type( Numeric, Format( "Best", 12 ) ) <<
+		Set Modeling Type( "Continuous" )
+	);
+	Current Data Table( old dt );
+	
+//and numeric ordinal
+Local( {old dt = Current Data Table()},
+	Current Data Table( dt2 );
+	For Each( {col, index}, {:Site #, :SLOT, :RCP CNT, :SITE},
+		col << Data Type( Numeric, Format( "Best", 12 ) ) <<
+		Set Modeling Type( "Ordinal" )
+	);
+	Current Data Table( old dt );
+);
+
+);
+
+);
+
+//Close the original table now the subsets exist
+Close( dt, NoSave );
+
+//Concatenate (rejoin) the subset tables with matching column names.  Solves the original problem of mismatched column values.
+concatTableList = {};
+shortNameList = {};
+
+For( i = 1, i <= N Table(), i++,
+	If( Starts With( Data Table( i ) << get name, "MEAS SET " ),
+		Insert Into( concatTableList, Data Table( i ) << get name );
+		Insert Into( shortNameList, Substr( Data Table( i ) << get name, 1, 8 ) );
+	)
+);
+
+If(N Items(concatTableList) > 1,
+// Find the unique key values.
+theKeys = Associative Array( shortNameList ) << get keys;
+
+// Create the concatenated tables
+For Each( {key}, theKeys,
+	catList = {};
+	For Each( {tableName}, concatTableList,
+		If( Starts With( tableName, key ),
+			Insert Into( catList, tableName )
+		)
+	);
+	If( N Items( catList ) > 1,
+		dt = New Table( key );
+		For Each( {cat}, catList, dt << concatenate( Data Table( cat ), append to first table ) );
+	);
+);
+
+//Don't start deleting tables until they are concatenated fully
+Wait(1);
+
+//Safe to delete those now leaving only the finished product
+For( i = 1, i <= N Table(), i++,
+	If( Starts With( Data Table( i ) << get name, "MEAS SET " ),
+		Close( Data Table( i ), NoSave)
+	);
+);
+For( i = 1, i <= N Table(), i++,
+	If( Starts With( Data Table( i ) << get name, "MEAS SET " ),
+		Close( Data Table( i ), NoSave)
+	);
+);
+
+);
+
+//Reassign dt object to the current table
+dt = Current Data Table();
+
+//Reverse iterate to eliminate any empty columns created so far.
+For( i = N Col( dt ), i >= 1, i--,
+
+       If( (Col N Missing( Column( i ) ) / N Row()) == 1,
+
+              dt << delete columns( i ), Break()
+
+       )
+
+);
+
+// Move selected column: 1st Thickness if it is stuck as the last column in the table.
+If( Column (NCols (dt)) == Column( "1st Thickness"), 
+Try(
+Data Table( "MEAS SET" ) << Move Selected Columns( {:"1st Thickness"n}, after( :"2nd Thickness"n ) );
+);
+);
+
+//Add a Radius estimate per Mirza's request
+New Column("Radius", Numeric, "Continuous", Format("Best", 12), Formula(Root(:X ^ 2 + :Y ^ 2, 2)));
+
+//Rename the table to include the Lot(s) ID for future recognisability
+Summarize( id_lot = By(:"LOT ID"n));
+
+Lots = Concat Items(id_lot, ", ");
+
+if (N Items(id_lot) <= 5, dt << set name( Lots || " Aset Data" ), "Multiple Lots Aset Data" );
+
+//Add a regular plotting script to the final table
+dt << New Script("Thickness Plot",
+
+dt = Current Data Table();
+
+colList = Current Data Table() << Get Column Names( String );
+
+thickcols = {};
+
+For( i = 1, i <= N Items( colList ), i++,
+	If( Contains( colList[i], "Thickness" ),
+		Insert Into( thickcols, colList[i] )
+	)
+);
+
+
+Variability Chart(
+	Y( Eval(thickcols) ),
+	X( :MEAS SET, :SLOT ),
+	Variability Analysis(
+		:"1st Thickness"n,
+		Std Dev Chart( 0 ),
+		Points Jittered( 1 ),
+		Show Box Plots( 1 )
+	)
+);
+	
+);
