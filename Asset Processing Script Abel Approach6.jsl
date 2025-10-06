@@ -240,6 +240,8 @@ for each row(
 //Create individual table
 dt2 = dt << Subset( Output Table( "MEAS SET "||unique[i] ), Selected Rows( 1 ), selected columns( 0 ) );
 
+dt << Clear Select;
+
 //Appropriately rename column headers from 1st row entries
 For( j = 1, j <= N Col( dt2 ), j++,
 	Column( dt2, j ) << Set Name( Column( dt2, j )[1] );
@@ -380,4 +382,5 @@ Variability Chart(
 	)
 );
 	
+
 );
