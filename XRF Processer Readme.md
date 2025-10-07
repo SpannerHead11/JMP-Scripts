@@ -12,9 +12,9 @@ username: rigaku
 
 pwd: rigaku
 
-![](img%5CXRF%20Data%20Flow_1.png)
+![](https://github.com/SpannerHead11/JMP-Scripts/blob/main/IMG/XRF%20Data%20Flow_1.png)
 
-![](img%5CXRF%20Data%20Flow_2.png)
+![](https://github.com/SpannerHead11/JMP-Scripts/blob/main/IMG/XRF%20Data%20Flow_2.png)
 
 Right Click\, Export
 
