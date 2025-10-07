@@ -28,5 +28,5 @@ Move from ufiles to local drive\.
 
 Open CSV file in JMP\.
 
-Process in JMP with XRF Processer3\.jsl
+Process in JMP with XRF Processer\.jsl
 
