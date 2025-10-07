@@ -348,6 +348,8 @@ Data Table( "MEAS SET" ) << Move Selected Columns( {:"1st Thickness"n}, after( :
 //Add a Radius estimate per Mirza's request
 New Column("Radius", Numeric, "Continuous", Format("Best", 12), Formula(Root(:X ^ 2 + :Y ^ 2, 2)));
 
+dt = Current Data Table();
+
 //Rename the table to include the Lot(s) ID for future recognisability
 Summarize( id_lot = By(:"LOT ID"n));
 
@@ -383,3 +385,4 @@ Variability Chart(
 );
 	
 );
+
