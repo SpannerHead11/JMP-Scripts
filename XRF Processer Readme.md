@@ -6,7 +6,7 @@ Declan Macken\, Abel Demisse
 
 # Remote Desktop – xrf501
 
-![]((https://github.com/SpannerHead11/JMP-Scripts/blob/main/IMG/XRF%20Data%20Flow_0.png))
+![](https://github.com/SpannerHead11/JMP-Scripts/blob/main/IMG/XRF%20Data%20Flow_0.png)
 
 username: rigaku
 
