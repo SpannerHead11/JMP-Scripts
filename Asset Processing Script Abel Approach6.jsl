@@ -220,22 +220,25 @@ For( i = 1, i <= N Items( delete ), i++,
 //Break the tables up by MEAS SET
 For( i = 1, i <= N Items( unique ), i++,
 
+
 //Select each MEAS SET group iteratively
+//Nominating dt in the for each row loop is essential here
 flag=0;
-for each row(
+for each row(dt,
 	If(dt:Column 16 == unique[i], flag=1,
-		dt:Column 16 == "", flag=0
+		dt:Column 16 != unique[i], flag=0
 	);
-	If( flag==1, dt << select rows(Row()-1, Row() ))
+	If( flag==1, dt << select rows(Row()))
 );
 
 flag=0;
-for each row(
+for each row(dt,
 	If(dt:Column 16 == unique[i], flag=1,
-		dt:Column 16 == "", flag=0
+		dt:Column 16 != unique[i], flag=0
 	);
-	If( flag==1, dt << select rows( Row() ))
+	If( flag==1, dt << select rows( Row()-1 ))
 );
+
 
 //Create individual table
 dt2 = dt << Subset( Output Table( "MEAS SET "||unique[i] ), Selected Rows( 1 ), selected columns( 0 ) );
@@ -260,7 +263,7 @@ Local( {old dt = Current Data Table()},
 		Set Modeling Type( "Continuous" )
 	);
 	Current Data Table( old dt );
-	
+);	
 //and numeric ordinal
 Local( {old dt = Current Data Table()},
 	Current Data Table( dt2 );
@@ -270,9 +273,6 @@ Local( {old dt = Current Data Table()},
 	);
 	Current Data Table( old dt );
 );
-
-);
-
 );
 
 //Close the original table now the subsets exist
@@ -382,5 +382,4 @@ Variability Chart(
 	)
 );
 	
-
 );
