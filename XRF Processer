@@ -1,0 +1,91 @@
+Names Default to Here( 1 );
+
+dt = Current Data Table();
+
+
+For( i = 1, i <= 8, i++,
+	c = 11 + i;
+	l = 12 - i;
+	m = 13 - i;
+	colno = Char( c );
+	Eval(Eval Expr(New Column( "Column " || colno,
+		Character,
+		"Nominal",
+		Formula(
+			If( Row() == 12,
+				Lag( As Column( 1 ), Expr(l) ),
+				If( Row() == 13,
+					Lag( As Column( 2 ), Expr(m) ),
+					Lag( As Column( Expr(c)) , 1)
+				)
+			)
+		)))
+	);
+);
+	
+	Wait(1);
+
+// Delete column formula: Column 12
+dt:Column 12 << Delete Formula;
+dt:Column 13 << Delete Formula;
+dt:Column 14 << Delete Formula;
+dt:Column 15 << Delete Formula;
+dt:Column 16 << Delete Formula;
+dt:Column 17 << Delete Formula;
+dt:Column 18 << Delete Formula;
+dt:Column 19 << Delete Formula;
+
+
+
+For( i = 1, i <= N Col( dt ), i++,
+	Column( dt, i ) << Set Name( Column( dt, i )[12] );
+);
+
+
+
+// Change column info: Data
+Current Data Table():Data << Data Type( Numeric ) <<
+Set Modeling Type( "Continuous" ) << Set Field Width( 12 );
+
+
+
+
+// Select where
+//Current Data Table() << Select where( Is Missing( :Data ) );
+
+
+// Delete selected rows
+Current Data Table() << Select where( Is Missing( :Data ) ) <<
+Delete Rows;
+
+
+
+// Standardize column attributes
+Local( {old dt = Current Data Table()},
+	//Current Data Table( Data Table() );
+	For Each( {col, index}, {:Slot, :Condition, :Data, :X, :Y, :"Ti(cps)"n, :"Hf(cps)"n, :"LP"n, :"Wafers"n},
+		col << Data Type( Numeric, Format( "Best", 12 ) ) <<
+		Set Modeling Type( "Continuous" )
+	);
+	Current Data Table( old dt );
+);
+
+// Change column info: Date
+dt:Date << Data Type(
+	Numeric,
+	Format( "y/m/d", 10 ),
+	Input Format( "y/m/d" )
+) << Set Modeling Type( "Continuous" ) << Set Field Width( 12 );
+
+
+// Change column info: Time
+dt:Time << Data Type(
+	Numeric,
+	Format( "h:m:s", 11, 0 ),
+	Input Format( "h:m:s", 0 )
+) << Set Modeling Type( "Continuous" ) << Set Field Width( 12 );
+
+New Column("Thickness (nm)", Numeric, "Continuous", Format("Best", 12), Formula(:"Ti(cps)"n * 0.00856 - 147.2));
+
+
+
