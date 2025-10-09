@@ -190,17 +190,17 @@ New Column( "Column 18",
 Wait( 1 );
 	
 //Delete column formulas now that the values are moved.
-dt:Column 8 << Delete Formula;
-dt:Column 9 << Delete Formula;
-dt:Column 10 << Delete Formula;
-dt:Column 11 << Delete Formula;
-dt:Column 12 << Delete Formula;
-dt:Column 13 << Delete Formula;
-dt:Column 14 << Delete Formula;
-dt:Column 15 << Delete Formula;
-dt:Column 16 << Delete Formula;
-dt:Column 17 << Delete Formula;
-dt:Column 18 << Delete Formula;
+Try(dt:Column 8 << Delete Formula;);
+Try(dt:Column 9 << Delete Formula;);
+Try(dt:Column 10 << Delete Formula;);
+Try(dt:Column 11 << Delete Formula;);
+Try(dt:Column 12 << Delete Formula;);
+Try(dt:Column 13 << Delete Formula;);
+Try(dt:Column 14 << Delete Formula;);
+Try(dt:Column 15 << Delete Formula;);
+Try(dt:Column 16 << Delete Formula;);
+Try(dt:Column 17 << Delete Formula;);
+Try(dt:Column 18 << Delete Formula;);
 
 //Get rid of the original tall data
 dt << Select where( As Column(1) == "RESULT TYPE" | As Column(1) == "WAFER ID" | As Column(1) == "LOT ID" | As Column(1) == "Cassette" | As Column(1) == "SLOT" | As Column(1) == "STATUS" | As Column(1) == "DATA TYPE" | As Column(1) == "RECIPE" | As Column(1) == "RCP CNT" | As Column(1) == "MEAS SET" | As Column(1) == "MATERIAL" | As Column(1) == "SITE" | As Column(1) == "MEAN" | As Column(1) == "MIN" | As Column(1) == "MAX" |	As Column(1) == "% STDDEV" | As Column(1) == "STDDEV" | As Column(1) == "3 % STDDEV" | As Column(1) ==	"3 STDDEV" | As Column(1) == "RANGE" | As Column(1) == "COLLECTION DATE/TIME:" | As Column(1) == "PROCESS DATE/TIME:" | As Column(1) == "EQUIPMENT:" | As Column(1) == "OPERATOR:" | As Column(1) == "SHIFT:" | As Column(1) == "MACHINE TYPE:" 
@@ -385,4 +385,3 @@ Variability Chart(
 );
 	
 );
-
