@@ -371,9 +371,8 @@ For( i = 1, i <= N Items( colList ), i++,
 	)
 );
 
-
 Variability Chart(
-	Y( Eval(thickcols) ),
+	Y( Eval(thickcols), :GOF ),
 	X( :MEAS SET, :SLOT ),
 	Variability Analysis(
 		:"1st Thickness"n,
@@ -384,4 +383,5 @@ Variability Chart(
 );
 	
 );
+
 
