@@ -3,6 +3,8 @@ Clear Symbols();
 //Make the initial table be dt, will need to reassign later.
 dt = Current Data Table();
 
+Title = dt << Get Name();
+
 // Delete selected rows
 dt << Clear Select << Select Rows( Index( 1, 9 ) ) << Delete Rows;
 
@@ -351,11 +353,8 @@ New Column("Radius", Numeric, "Continuous", Format("Best", 12), Formula(Root(:X 
 dt = Current Data Table();
 
 //Rename the table to include the Lot(s) ID for future recognisability
-Summarize( id_lot = By(:"LOT ID"n));
 
-Lots = Concat Items(id_lot, ", ");
-
-if (N Items(id_lot) <= 5, dt << set name( Lots || " Aset Data" ), "Multiple Lots Aset Data" );
+dt << set name( Title || " Aset Data" );
 
 //Add a regular plotting script to the final table
 dt << New Script("Thickness Plot",
@@ -385,3 +384,4 @@ Variability Chart(
 );
 	
 );
+
